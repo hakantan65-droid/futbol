@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Futbol Okulum</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,sans-serif;background:#f0f7ff;color:#1a1a2e;min-height:100vh;padding-bottom:24px}
+    :root{--red:#e63946;--navy:#1d3557;--blue:#457b9d;--green:#52b788;--yellow:#ffd166;--gray:#f4f6f8;--muted:#6c757d}
+    header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+    .card{background:#fff;border-radius:14px;padding:14px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .ct{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:10px}
+    .row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+    .row label{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;min-width:80px}
+    input,select,textarea{padding:8px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;width:100%;outline:none}
+    .btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:var(--navy);color:#fff}
+    .list-item{background:var(--gray);border-radius:10px;padding:10px;margin-bottom:7px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">⚽</div>
+    <div>
+      <h1>FUTBOL OKULUM</h1>
+      <p>Kocaeli Spor Akademi</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="ct">➕ Oyuncu Ekle</div>
+    <div class="row"><label>Ad Soyad</label><input id="oy-ad" placeholder="Oyuncu adı"></div>
+    <div class="row"><label>Pozisyon</label><select id="oy-poz"><option>Forvet</option><option>Orta Saha</option><option>Defans</option><option>Kaleci</option></select></div>
+    <button class="btn" onclick="oyuncuEkle()">💾 Kaydet</button>
+  </div>
+
+  <div class="card">
+    <div class="ct">👦 Oyuncu Listesi</div>
+    <div id="oyuncu-liste" style="color:var(--muted);font-size:13px">Henüz oyuncu eklenmedi.</div>
+  </div>
+
+  <script>
+    const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}};
+    const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+    let oyuncular=load('fo_oyuncular',[]);
+
+    function oyuncuEkle(){
+      const ad=document.getElementById('oy-ad').value.trim();
+      if(!ad){alert('Ad Soyad zorunlu!');return}
+      oyuncular.push({ad,poz:document.getElementById('oy-poz').value});
+      save('fo_oyuncular',oyuncular);
+      document.getElementById('oy-ad').value='';
+      renderOyuncular();
+    }
+
+    function renderOyuncular(){
+      const el=document.getElementById('oyuncu-liste');
+      if(!oyuncular.length){el.innerHTML='Henüz oyuncu eklenmedi.';return}
+      el.innerHTML=oyuncular.map(o=>`<div class="list-item"><b>${o.ad}</b><div style="font-size:12px;color:#666">${o.poz}</div></div>`).join('');
+    }
+
+    renderOyuncular();
+  </script>
+</body>
+</html>
