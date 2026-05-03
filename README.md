@@ -1,6 +1,16 @@
 # futbol
 
-Bu repo artık Android APK üretmek için temel bir WebView projesi içerir.
+Bu repo Android APK üretmek için WebView tabanlı bir mobil uygulama içerir.
+
+## Uygulama (MVP)
+
+Güncel sürüm, **FMS (Functional Movement Screen) değerlendirme** odaklıdır:
+
+- 7 temel FMS hareketi için 0-3 puanlama
+- Toplam skor hesaplama (21 üzerinden)
+- Basit seviye yorumu ve zayıf hareket önerileri
+- LocalStorage ile değerlendirme geçmişi kayıtları
+- Android WebView içinde çevrimdışı çalışabilir yapı
 
 ## APK oluşturma
 
@@ -11,5 +21,5 @@ Bu repo artık Android APK üretmek için temel bir WebView projesi içerir.
 
 ## Uygulama yapısı
 
-- `android-app/app/src/main/assets/index.html`: Uygulamada gösterilen HTML arayüzü.
+- `android-app/app/src/main/assets/index.html`: FMS arayüzü, puanlama ve local kayıt mantığı.
 - `android-app/app/src/main/java/com/futbolokulum/MainActivity.kt`: WebView başlatır ve `index.html` dosyasını açar.
