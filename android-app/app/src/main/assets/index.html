@@ -2,65 +2,219 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Futbol Okulum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FMS Değerlendirme</title>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:system-ui,sans-serif;background:#f0f7ff;color:#1a1a2e;min-height:100vh;padding-bottom:24px}
-    :root{--red:#e63946;--navy:#1d3557;--blue:#457b9d;--green:#52b788;--yellow:#ffd166;--gray:#f4f6f8;--muted:#6c757d}
-    header{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
-    .logo{width:44px;height:44px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
-    .card{background:#fff;border-radius:14px;padding:14px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-    .ct{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:10px}
-    .row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
-    .row label{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;min-width:80px}
-    input,select,textarea{padding:8px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;width:100%;outline:none}
-    .btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:var(--navy);color:#fff}
-    .list-item{background:var(--gray);border-radius:10px;padding:10px;margin-bottom:7px}
+    :root {
+      --bg: #f4f8ff;
+      --card: #ffffff;
+      --primary: #1d3557;
+      --accent: #2a9d8f;
+      --danger: #e63946;
+      --muted: #607089;
+      --border: #d8e2f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #1d3557, #457b9d);
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    h1 { font-size: 18px; margin: 0; }
+    p { margin: 0; }
+    .badge { background: #ffffff1a; border: 1px solid #ffffff3a; border-radius: 10px; padding: 8px 10px; font-size: 12px; }
+    .container { padding: 12px; max-width: 860px; margin: 0 auto; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(29,53,87,.06);
+    }
+    .title { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+    .desc { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+    .score-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .score-btn {
+      min-width: 44px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .score-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .result-good { color: #167a6f; font-weight: 700; }
+    .result-mid { color: #c88100; font-weight: 700; }
+    .result-low { color: var(--danger); font-weight: 700; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button.action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      background: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.secondary { background: #6c7f96; }
+    .list-item { background: #f7fbff; border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .warning { margin-top: 10px; font-size: 12px; color: #7a2830; background: #ffeef0; border: 1px solid #ffd3d8; border-radius: 10px; padding: 10px; }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">⚽</div>
     <div>
-      <h1>FUTBOL OKULUM</h1>
-      <p>Kocaeli Spor Akademi</p>
+      <h1>FMS Değerlendirme Uygulaması</h1>
+      <p style="font-size:12px;opacity:.9">Functional Movement Screen - MVP</p>
     </div>
+    <div class="badge" id="total-badge">Toplam Skor: 0 / 21</div>
   </header>
 
-  <div class="card">
-    <div class="ct">➕ Oyuncu Ekle</div>
-    <div class="row"><label>Ad Soyad</label><input id="oy-ad" placeholder="Oyuncu adı"></div>
-    <div class="row"><label>Pozisyon</label><select id="oy-poz"><option>Forvet</option><option>Orta Saha</option><option>Defans</option><option>Kaleci</option></select></div>
-    <button class="btn" onclick="oyuncuEkle()">💾 Kaydet</button>
-  </div>
+  <main class="container">
+    <section class="card">
+      <div class="title">📋 Hareketler ve Skorlama</div>
+      <div class="muted">Her hareket için 0-3 arası puan verin. (0: Ağrı/başarısız, 3: Kusursuz form)</div>
+    </section>
 
-  <div class="card">
-    <div class="ct">👦 Oyuncu Listesi</div>
-    <div id="oyuncu-liste" style="color:var(--muted);font-size:13px">Henüz oyuncu eklenmedi.</div>
-  </div>
+    <section id="movement-list" class="grid"></section>
+
+    <section class="card">
+      <div class="title">📊 Sonuç</div>
+      <div id="result-text" class="desc">Skorlama tamamlandığında sonuç burada görünür.</div>
+      <div id="suggestions" class="muted"></div>
+      <div class="actions" style="margin-top:12px">
+        <button class="action" onclick="saveAssessment()">💾 Değerlendirmeyi Kaydet</button>
+        <button class="action secondary" onclick="resetScores()">🔄 Sıfırla</button>
+      </div>
+      <div class="warning">Not: Bu uygulama tıbbi teşhis amacı taşımaz. Ağrı/sakatlık durumunda uzman fizyoterapiste başvurun.</div>
+    </section>
+
+    <section class="card">
+      <div class="title">🕘 Geçmiş Değerlendirmeler</div>
+      <div id="history" class="muted">Henüz kayıt yok.</div>
+    </section>
+  </main>
 
   <script>
-    const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}};
-    const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-    let oyuncular=load('fo_oyuncular',[]);
+    const movements = [
+      { id: 'deep_squat', name: 'Deep Squat', desc: 'Kalça-diz-ayak bileği mobilitesi ve core kontrolü.' },
+      { id: 'hurdle_step', name: 'Hurdle Step', desc: 'Tek ayak denge ve adım kontrolü.' },
+      { id: 'inline_lunge', name: 'Inline Lunge', desc: 'Dinamik stabilite ve alt gövde koordinasyonu.' },
+      { id: 'shoulder_mobility', name: 'Shoulder Mobility', desc: 'Omuz mobilitesi ve torasik hareket.' },
+      { id: 'aslr', name: 'Active Straight Leg Raise', desc: 'Hamstring esnekliği ve pelvis kontrolü.' },
+      { id: 'trunk_pushup', name: 'Trunk Stability Push-up', desc: 'Core stabilitesi ve üst gövde kuvveti.' },
+      { id: 'rotary_stability', name: 'Rotary Stability', desc: 'Çapraz vücut koordinasyonu ve denge.' },
+    ];
 
-    function oyuncuEkle(){
-      const ad=document.getElementById('oy-ad').value.trim();
-      if(!ad){alert('Ad Soyad zorunlu!');return}
-      oyuncular.push({ad,poz:document.getElementById('oy-poz').value});
-      save('fo_oyuncular',oyuncular);
-      document.getElementById('oy-ad').value='';
-      renderOyuncular();
+    const load = (k, d) => {
+      try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }
+      catch { return d; }
+    };
+    const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+    let scores = load('fms_scores', Object.fromEntries(movements.map(m => [m.id, 0])));
+    let history = load('fms_history', []);
+
+    function renderMovements() {
+      const container = document.getElementById('movement-list');
+      container.innerHTML = movements.map(m => {
+        const current = Number(scores[m.id] ?? 0);
+        const scoreButtons = [0,1,2,3].map(s => `
+          <button class="score-btn ${s===current ? 'active' : ''}" onclick="setScore('${m.id}', ${s})">${s}</button>
+        `).join('');
+
+        return `
+          <article class="card">
+            <div class="title">${m.name}</div>
+            <div class="desc">${m.desc}</div>
+            <div class="score-row">${scoreButtons}</div>
+          </article>
+        `;
+      }).join('');
     }
 
-    function renderOyuncular(){
-      const el=document.getElementById('oyuncu-liste');
-      if(!oyuncular.length){el.innerHTML='Henüz oyuncu eklenmedi.';return}
-      el.innerHTML=oyuncular.map(o=>`<div class="list-item"><b>${o.ad}</b><div style="font-size:12px;color:#666">${o.poz}</div></div>`).join('');
+    function setScore(id, value) {
+      scores[id] = value;
+      save('fms_scores', scores);
+      renderMovements();
+      renderResult();
     }
 
-    renderOyuncular();
+    function getTotalScore() {
+      return movements.reduce((acc, m) => acc + Number(scores[m.id] ?? 0), 0);
+    }
+
+    function renderResult() {
+      const total = getTotalScore();
+      document.getElementById('total-badge').textContent = `Toplam Skor: ${total} / 21`;
+
+      let levelClass = 'result-low';
+      let summary = 'Düşük hareket kalitesi, düzeltici egzersiz planı önerilir.';
+      if (total >= 17) {
+        levelClass = 'result-good';
+        summary = 'İyi hareket kalitesi. Programı sürdürebilirsiniz.';
+      } else if (total >= 14) {
+        levelClass = 'result-mid';
+        summary = 'Orta seviye hareket kalitesi. Mobilite/stabilite çalışmaları ekleyin.';
+      }
+
+      document.getElementById('result-text').innerHTML = `<span class="${levelClass}">${summary}</span>`;
+
+      const weak = movements.filter(m => Number(scores[m.id] ?? 0) <= 1).map(m => `• ${m.name} için düzeltici egzersiz önerilir.`);
+      document.getElementById('suggestions').innerHTML = weak.length ? weak.join('<br/>') : 'Belirgin zayıf hareket yok.';
+    }
+
+    function saveAssessment() {
+      const entry = {
+        date: new Date().toISOString(),
+        total: getTotalScore(),
+        scores: { ...scores },
+      };
+      history.unshift(entry);
+      save('fms_history', history);
+      renderHistory();
+      alert('Değerlendirme kaydedildi.');
+    }
+
+    function resetScores() {
+      scores = Object.fromEntries(movements.map(m => [m.id, 0]));
+      save('fms_scores', scores);
+      renderMovements();
+      renderResult();
+    }
+
+    function renderHistory() {
+      const el = document.getElementById('history');
+      if (!history.length) {
+        el.textContent = 'Henüz kayıt yok.';
+        return;
+      }
+      el.innerHTML = history.slice(0, 10).map(h => {
+        const d = new Date(h.date);
+        const dateText = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        return `<div class="list-item"><strong>${h.total} / 21</strong><div class="muted">${dateText}</div></div>`;
+      }).join('');
+    }
+
+    renderMovements();
+    renderResult();
+    renderHistory();
   </script>
 </body>
 </html>
